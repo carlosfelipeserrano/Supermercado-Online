@@ -4,3 +4,4 @@ Sistema para comprar y pagar sin personal de un Supermercado
 Victor Núñez
 Carlos Serrano
 
+¡[hola] (Imag/hola.jpeg)
