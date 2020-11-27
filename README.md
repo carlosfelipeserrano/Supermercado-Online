@@ -4,5 +4,5 @@ Sistema para comprar y pagar sin personal de un Supermercado
 Victor Núñez
 Carlos Serrano
 # imagen
-¡[Hola] (ima/hola.png)
+![modelo](Ima/hola.png)
 
