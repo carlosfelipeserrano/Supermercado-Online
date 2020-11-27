@@ -5,6 +5,6 @@ Victor Núñez
 Carlos Serrano
 
 <<<<<<< HEAD
-¡[hola] (Imag/hola.png)
+¡[hola] (Ima/hola.png)
 =======
 >>>>>>> b41fceaff6eabe1831327ffd683c10882aaea4d9
