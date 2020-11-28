@@ -244,6 +244,7 @@ public class Crud extends javax.swing.JFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Agregar();
         listado();
+        nuevo();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtidActionPerformed
@@ -251,17 +252,20 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_txtidActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        Eliminar();
+        listado();
+        nuevo();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         Modificar(); 
         listado();
+        nuevo();
         
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        nuevo();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void TablaDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaDatosMouseClicked
@@ -392,6 +396,33 @@ public class Crud extends javax.swing.JFrame {
         }
 
     }
+       void Eliminar() {
+        String sql = "delete from producto where Id=" + id;        
+        int fila = TablaDatos.getSelectedRow();
+        if (fila < 0) {
+            JOptionPane.showMessageDialog(null,"Producto no Seleccionado");
+        } else {
+                try {
+                    con = cn.getConnection();
+                    st = con.createStatement();
+                    st.executeUpdate(sql);
+                    JOptionPane.showMessageDialog(null, "Producto Eliminado");
+                    limpiarTabla(model);
+                    
+                } catch (Exception e) {
+                }
+               
+        }
+
+    }
+       void nuevo() {
+        txtid.setText("");
+        txtnombre.setText("");
+        txtTipoProducto.setText("");
+        txtprecio.setText("");
+        txtnombre.requestFocus();
+    }
+      
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TablaDatos;
