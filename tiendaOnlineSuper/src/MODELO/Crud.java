@@ -6,21 +6,33 @@
 package MODELO;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+
 
 /**
  *
  * @author Victor nuñez
  */
 public class Crud extends javax.swing.JFrame {
+    
+    Conexion cn = new Conexion();
+    Connection con;
+    DefaultTableModel model;
+    Statement st;
+    ResultSet rs;
+    int id;
 
     /**
      * Creates new form Crud
      */
     public Crud() {
         initComponents();
+        setLocationRelativeTo(null);
+        listado();
     }
 
     /**
@@ -34,7 +46,7 @@ public class Crud extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblProductos = new javax.swing.JTable();
+        TablaDatos = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtnombre = new javax.swing.JTextField();
@@ -46,7 +58,6 @@ public class Crud extends javax.swing.JFrame {
         btnModificar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
-        textid = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
 
@@ -56,7 +67,7 @@ public class Crud extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Productos");
 
-        tblProductos.setModel(new javax.swing.table.DefaultTableModel(
+        TablaDatos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -64,22 +75,20 @@ public class Crud extends javax.swing.JFrame {
                 "id", "Nombre", "TipoProducto", "precio"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
-            };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblProductos);
+        TablaDatos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TablaDatosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(TablaDatos);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos"));
 
@@ -103,10 +112,25 @@ public class Crud extends javax.swing.JFrame {
         });
 
         btnModificar.setText("modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setText("eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnLimpiar.setText("limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("id");
 
@@ -147,8 +171,7 @@ public class Crud extends javax.swing.JFrame {
                                     .addComponent(txtnombre)
                                     .addComponent(txtprecio)
                                     .addComponent(txtid))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(12, 12, 12))
                             .addComponent(txtTipoProducto))
                         .addContainerGap())))
         );
@@ -156,11 +179,9 @@ public class Crud extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5)
-                        .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtnombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -184,7 +205,7 @@ public class Crud extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEliminar)
                     .addComponent(btnLimpiar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -221,26 +242,44 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_txtnombreActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String nombre = txtnombre.getText();
-        int tipoProducto =Integer.parseInt(txtTipoProducto.getText());
-        System.out.println("datos"+nombre + tipoProducto);
-        
-        try{
-            Connection con = conectorbd.conectar();
-            PreparedStatement ps = con.prepareStatement("insert into producto(nombre,tipoProducto_id_fk) values('" + nombre + "','" + tipoProducto + "')");
-           
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(null,"registro guardado");
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null,"error:"+e.toString());
-            
-        }
-        
+        Agregar(); 
+        listado();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtidActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtidActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        Modificar(); 
+        listado();
+        
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void TablaDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaDatosMouseClicked
+         int row = TablaDatos.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No se Selecciono");
+        } else {
+            id = Integer.parseInt((String) TablaDatos.getValueAt(row, 0).toString());
+            String nom = (String) TablaDatos.getValueAt(row, 1);
+            int TipoP = Integer.parseInt((String) TablaDatos.getValueAt(row, 2).toString());
+            int precio = Integer.parseInt((String) TablaDatos.getValueAt(row, 3).toString());
+            txtid.setText("" + id);
+            txtnombre.setText(nom);
+            txtTipoProducto.setText(""+TipoP);
+            txtprecio.setText(""+precio);
+
+        }
+    }//GEN-LAST:event_TablaDatosMouseClicked
 
     /**
      * @param args the command line arguments
@@ -276,8 +315,86 @@ public class Crud extends javax.swing.JFrame {
             }
         });
     }
+     void listado() {
+        String sql = "select * from producto";
+        try {
+            con = cn.getConnection();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+            Object[] producto = new Object[4];
+//            String[] Titulos={"ID","DNI","NOMBRES"};         
+//            model=new DefaultTableModel(null,Titulos);   
+            model = (DefaultTableModel) TablaDatos.getModel();
+            while (rs.next()) {
+                producto[0] = rs.getInt("id");
+                producto[1] = rs.getString("nombre");
+                producto[2] = rs.getInt("tipoProducto_id_fk");
+                producto[3] = rs.getInt("precio");
+                
+                model.addRow(producto);
+            }
+            TablaDatos.setModel(model);
+
+        } catch (Exception e) {
+        }
+
+    }
+    
+     void Agregar() {
+        String nom = txtnombre.getText();
+        int TipoP = Integer.parseInt(txtTipoProducto.getText());
+        int Precio =Integer.parseInt( txtprecio.getText());
+        try {
+            if (nom.equals("")) {
+                JOptionPane.showMessageDialog(null, "Debe Ingresar Datos");
+                limpiarTabla(model);               
+            } else {
+                String sql = "insert into producto(nombre,tipoProducto_id_fk,precio) values('" + nom + "','" + TipoP + "','" + Precio + "')";
+                con = cn.getConnection();
+                st = con.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Producto agregado");
+                limpiarTabla(model);
+                
+            }
+
+        } catch (Exception e) {
+        }
+         
+        
+    }
+     void Modificar() {
+        String nom = txtnombre.getText();
+        int TipoP = Integer.parseInt(txtTipoProducto.getText());
+        int Precio =Integer.parseInt(txtprecio.getText());
+        String sql = "update producto set nombre='" + nom + "',tipoProducto_id_fk='" + TipoP + "',precio='" + Precio + "' where Id=" + id;
+        try {
+            if (nom != null ) {
+                con = cn.getConnection();
+                st = con.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Producto Modificado");
+                limpiarTabla(model);
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Error...!!!");
+            }
+
+        } catch (Exception e) {
+        }
+
+    }
+     
+      void limpiarTabla(DefaultTableModel model) {
+        for (int i = 0; i <= TablaDatos.getRowCount(); i++) {
+            model.removeRow(i);
+            i = i - 1;
+        }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TablaDatos;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
@@ -289,8 +406,6 @@ public class Crud extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField textid;
     private javax.swing.JTextField txtTipoProducto;
     private javax.swing.JTextField txtid;
     private javax.swing.JTextField txtnombre;
