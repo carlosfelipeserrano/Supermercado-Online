@@ -242,7 +242,7 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_txtnombreActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Agregar(); 
+        Agregar();
         listado();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -343,7 +343,7 @@ public class Crud extends javax.swing.JFrame {
      void Agregar() {
         String nom = txtnombre.getText();
         int TipoP = Integer.parseInt(txtTipoProducto.getText());
-        int Precio =Integer.parseInt( txtprecio.getText());
+        int Precio =Integer.parseInt(txtprecio.getText());
         try {
             if (nom.equals("")) {
                 JOptionPane.showMessageDialog(null, "Debe Ingresar Datos");
