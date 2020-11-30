@@ -19,14 +19,7 @@ public class metodossql {
     private static PreparedStatement sentencia_Preparada;
     private static ResultSet resultado;
     
-    public void guardar_datos(String nombre, int tipoProducto){
-        
-        /*try{
-            conexion = conectorbd.conectar();
-        }catch{
-            
-        }
-    
-    }
-    
 }
+
+        
+ 
