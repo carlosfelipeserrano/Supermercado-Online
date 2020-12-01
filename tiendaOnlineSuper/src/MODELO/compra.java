@@ -219,7 +219,11 @@ public class compra extends javax.swing.JFrame {
     }//GEN-LAST:event_Cantidad_unidadActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //Agregar();
+        Agregar();
+        listado();
+        nuevo();
+        System.out.println("Agregado");
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -281,26 +285,48 @@ public class compra extends javax.swing.JFrame {
         }
 
     }
-     /*void Agregar() {
+     void Agregar() {
         String fact = txtFactura.getText();
         int producto = Integer.parseInt(txtproducto.getText());
+        int cantidad = Cantidad_unidad.getSelectedIndex()+1;
         int Precio =Integer.parseInt(txtTotal.getText());
+        
         try {
             if (fact.equals("")) {
                 JOptionPane.showMessageDialog(null, "Debe Ingresar Datos");
+                limpiarTabla(model);
                            
             } else {
-                String sql = "insert into compra (factura_id_fk, producto_id_fk,cantidad,precio) values('" + fact + "','" + producto + "','" + "','" + Precio + "')";
+                String sql = "insert into compra (factura_id_fk, producto_id_fk,cantidad,precio) values('" + fact + "','" + producto + "','" +cantidad+ "','" + Precio + "')";
+                System.out.println(sql);
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "Producto agregado");
+                JOptionPane.showMessageDialog(null, "compra agregada");
+                limpiarTabla(model);
           
                 
             }
 
         } catch (Exception e) {
-        }*/
+            System.out.println(e);
+        }
+     }
+         void limpiarTabla(DefaultTableModel model) {
+        for (int i = 0; i <= TablaDatos.getRowCount(); i++) {
+            model.removeRow(i);
+            i = i - 1;
+        }
+
+    }
+        void nuevo() {
+        txtid.setText("");
+        txtFactura.setText("");
+        txtproducto.setText("");
+        txtTotal.setText("");
+        txtFactura.requestFocus();
+    }
+     
          
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

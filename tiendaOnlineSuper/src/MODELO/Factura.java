@@ -5,9 +5,15 @@
  */
 package MODELO;
 
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -56,8 +62,8 @@ public class Factura extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
-        txtpagado = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        Checkpagado = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -121,6 +127,12 @@ public class Factura extends javax.swing.JFrame {
 
         jButton1.setText("Siguiente");
 
+        Checkpagado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckpagadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout txtFacturaLayout = new javax.swing.GroupLayout(txtFactura);
         txtFactura.setLayout(txtFacturaLayout);
         txtFacturaLayout.setHorizontalGroup(
@@ -146,7 +158,7 @@ public class Factura extends javax.swing.JFrame {
                             .addGroup(txtFacturaLayout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtpagado, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(Checkpagado, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(txtFacturaLayout.createSequentialGroup()
                         .addGap(35, 35, 35)
                         .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -177,11 +189,11 @@ public class Factura extends javax.swing.JFrame {
                 .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
+                .addGap(44, 44, 44)
                 .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtpagado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                    .addComponent(Checkpagado))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(btnModificar))
@@ -216,13 +228,16 @@ public class Factura extends javax.swing.JFrame {
         );
 
         txtFactura.getAccessibleContext().setAccessibleName("");
-        txtFactura.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Agregar();
+        try {
+            Agregar();
+        } catch (ParseException ex) {
+            System.out.println(ex);
+        }
         listado();
         nuevo();
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -255,10 +270,15 @@ public class Factura extends javax.swing.JFrame {
             txtid.setText("" + id);
             txtcliente.setText(cli);
             txtFecha.setText("" + Fecha);
-            txtpagado.setText("" + Pagado);
+            Checkpagado.setText("" + Pagado);
 
         }        
     }//GEN-LAST:event_TablaFactMouseClicked
+
+    private void CheckpagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckpagadoActionPerformed
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_CheckpagadoActionPerformed
 
     
     /**
@@ -298,7 +318,7 @@ public class Factura extends javax.swing.JFrame {
 
     
     void listado() {
-        String sql = "select * from producto";
+        String sql = "select * from factura";
         try {
             con = cn.getConnection();
             st = con.createStatement();
@@ -310,7 +330,7 @@ public class Factura extends javax.swing.JFrame {
             while (rs.next()) {
                 producto[0] = rs.getInt("id");
                 producto[1] = rs.getString("cliente_id_fk");
-                producto[2] = rs.getInt("fecha");
+                producto[2] = rs.getDate("fecha");
                 producto[3] = rs.getInt("pagado");
 
                 model.addRow(producto);
@@ -322,16 +342,32 @@ public class Factura extends javax.swing.JFrame {
 
     }
 
-    void Agregar() {
+    void Agregar() throws ParseException {
         String cli = txtcliente.getText();
-        int fecha = Integer.parseInt(txtFecha.getText());
-        int pago = Integer.parseInt(txtpagado.getText());
+        String fecha = txtFecha.getText();
+       
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); // your template here
+        java.util.Date dateStr = formatter.parse(fecha);
+        java.sql.Date dateDB = new java.sql.Date(dateStr.getTime());
+       //DateTime dateTime = DateTime.parse(dateInString, formatter);
+        //DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
+        //int pago = Integer.parseInt(Checkpagado.getText());
+        boolean pagado = Checkpagado.isSelected();
+        int espagado;
+        if (pagado){
+            espagado = 1;
+        }else{
+            espagado = 0;
+        }
+        System.out.println(pagado);
+        
         try {
             if (cli.equals("")) {
                 JOptionPane.showMessageDialog(null, "Debe Ingresar Datos");
                 limpiarTabla(model);
             } else {
-                String sql = "insert into factura(cliente_id_fk,fecha,pagado) values('" + cli + "','" + fecha + "','" + pago + "')";
+                String sql = "insert into factura(cliente_id_fk, fecha, pagado) values('" + cli + "','" + dateDB + "',b'" + espagado + "')";
+                System.out.println(sql);
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
@@ -341,6 +377,7 @@ public class Factura extends javax.swing.JFrame {
             }
 
         } catch (Exception e) {
+            System.out.println(e);
         }
 
     }
@@ -348,7 +385,7 @@ public class Factura extends javax.swing.JFrame {
     void Modificar() {
         String cli = txtcliente.getText();
         int fecha = Integer.parseInt(txtFecha.getText());
-        int pago = Integer.parseInt(txtpagado.getText());
+        int pago = Integer.parseInt(Checkpagado.getText());
         String sql = "update producto set cliente_id_fk='" + cli + "', fecha='" + fecha + "',precio='" + pago+ "' where Id=" + id;
         try {
             if (cli != null) {
@@ -399,7 +436,7 @@ public class Factura extends javax.swing.JFrame {
         txtid.setText("");
         txtcliente.setText("");
         txtFecha.setText("");
-        txtpagado.setText("");
+        Checkpagado.setText("");
         txtcliente.requestFocus();
     }
 
@@ -407,6 +444,7 @@ public class Factura extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox Checkpagado;
     private javax.swing.JTable TablaFact;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
@@ -422,7 +460,6 @@ public class Factura extends javax.swing.JFrame {
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtcliente;
     private javax.swing.JTextField txtid;
-    private javax.swing.JTextField txtpagado;
     // End of variables declaration//GEN-END:variables
 
 }
