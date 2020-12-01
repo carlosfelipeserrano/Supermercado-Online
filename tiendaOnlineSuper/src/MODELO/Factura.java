@@ -190,9 +190,10 @@ public class Factura extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(44, 44, 44)
-                .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(Checkpagado))
+                .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Checkpagado)
+                    .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(txtFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
@@ -249,7 +250,11 @@ public class Factura extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        Modificar();
+        try {
+            Modificar();
+        } catch (ParseException ex) {
+            System.out.println(ex);
+        }
         listado();
         nuevo();
     }//GEN-LAST:event_btnModificarActionPerformed
@@ -265,7 +270,7 @@ public class Factura extends javax.swing.JFrame {
         } else {
             id = Integer.parseInt((String) TablaFact.getValueAt(row, 0).toString());
             String cli = (String) TablaFact.getValueAt(row, 1);
-            int Fecha = Integer.parseInt((String) TablaFact.getValueAt(row, 2).toString());
+            String Fecha = ((String) TablaFact.getValueAt(row, 2).toString());
             int Pagado = Integer.parseInt((String) TablaFact.getValueAt(row, 3).toString());
             txtid.setText("" + id);
             txtcliente.setText(cli);
@@ -382,11 +387,22 @@ public class Factura extends javax.swing.JFrame {
 
     }
 
-    void Modificar() {
+    void Modificar() throws ParseException {
         String cli = txtcliente.getText();
-        int fecha = Integer.parseInt(txtFecha.getText());
+        String fecha = txtFecha.getText();
         int pago = Integer.parseInt(Checkpagado.getText());
-        String sql = "update producto set cliente_id_fk='" + cli + "', fecha='" + fecha + "',precio='" + pago+ "' where Id=" + id;
+         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); // your template here
+        java.util.Date dateStr = formatter.parse(fecha);
+        java.sql.Date dateDB = new java.sql.Date(dateStr.getTime());
+        boolean pagado = Checkpagado.isSelected();
+        int espagado;
+        if (pagado){
+            espagado = 1;
+        }else{
+            espagado = 0;
+        }
+        System.out.println(pagado);
+        String sql = "update factura set cliente_id_fk='" + cli + "', fecha='" + fecha + "',precio='" + pago+ "' where Id=" + id;
         try {
             if (cli != null) {
                 con = cn.getConnection();
@@ -413,7 +429,7 @@ public class Factura extends javax.swing.JFrame {
     }
 
     void Eliminar() {
-        String sql = "delete from producto where Id=" + id;
+        String sql = "delete from factura where Id=" + id;
         int fila = TablaFact.getSelectedRow();
         if (fila < 0) {
             JOptionPane.showMessageDialog(null, "Producto no Seleccionado");

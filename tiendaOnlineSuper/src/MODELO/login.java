@@ -1,7 +1,6 @@
 
 package MODELO;
 
-import static MODELO.conectorbd.usuario;
 import javax.swing.JOptionPane;
 
 
