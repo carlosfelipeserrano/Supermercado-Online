@@ -91,9 +91,10 @@ INSERT INTO producto VALUES (NULL,"cama dos plazas",1,6000),
                        (NULL,"pinta labios",3,2500),
                        (NULL,"mancuernas 20kg",4,4000);
 -- insert para la factura
-INSERT INTO factura (id,cliente_id_fk,fecha) VALUES (NULL,1,"2006-10-11 16:40:00"),
-                      (NULL,2,"2009-12-1 14:10:00"),
-                      (NULL,3,"2010-8-9 11:22:00");
+INSERT INTO factura (id,cliente_id_fk,fecha, pagado) VALUES (NULL,1,"2006-10-11 16:40:00",0),
+                                                            (NULL,2,"2013-09-10 17:10:00", 1),
+                                                            (NULL,3,"2010-8-9 11:22:00",1);
+                     
 
 --insert para compra
 INSERT INTO compra VALUES (NULL,1,2,2,(SELECT precio FROM producto WHERE id = 2) * 2),
@@ -133,3 +134,12 @@ DELIMITER ;
 --trigger UPDATE
 
 UPDATE cliente SET nombre = 'Anais Gonzales' WHERE id = 2;
+
+
+-- Funcion que retorna la cantidad de libros disponibles(1) y no disponibles(0)
+DELIMITER //
+CREATE FUNCTION seleccionar_facturas_pagadas(_pagado INT) RETURNS INT
+BEGIN
+    RETURN (SELECT COUNT(factura.id) FROM factura WHERE pagado = _pagado);
+END //
+DELIMITER ;
