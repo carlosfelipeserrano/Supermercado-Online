@@ -409,7 +409,7 @@ public class compra extends javax.swing.JFrame {
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "Factura Modificado");
+                JOptionPane.showMessageDialog(null, "compra Modificado");
                 limpiarTabla(model);
 
             } else {
