@@ -35,6 +35,7 @@ public class Factura extends javax.swing.JFrame {
      */
     public Factura() {
         initComponents();
+        this.setLocationRelativeTo(null);
         listado();
         
     }
@@ -328,17 +329,17 @@ public class Factura extends javax.swing.JFrame {
             con = cn.getConnection();
             st = con.createStatement();
             rs = st.executeQuery(sql);
-            Object[] producto = new Object[4];
+            Object[] factura = new Object[4];
 //            String[] Titulos={"ID","DNI","NOMBRES"};         
 //            model=new DefaultTableModel(null,Titulos);   
             model = (DefaultTableModel) TablaFact.getModel();
             while (rs.next()) {
-                producto[0] = rs.getInt("id");
-                producto[1] = rs.getString("cliente_id_fk");
-                producto[2] = rs.getDate("fecha");
-                producto[3] = rs.getInt("pagado");
+                factura[0] = rs.getInt("id");
+                factura[1] = rs.getString("cliente_id_fk");
+                factura[2] = rs.getDate("fecha");
+                factura[3] = rs.getInt("pagado");
 
-                model.addRow(producto);
+                model.addRow(factura);
             }
             TablaFact.setModel(model);
 
@@ -408,7 +409,7 @@ public class Factura extends javax.swing.JFrame {
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "Factura Modificado");
+                JOptionPane.showMessageDialog(null, "Factura Modificada");
                 limpiarTabla(model);
 
             } else {
@@ -432,13 +433,13 @@ public class Factura extends javax.swing.JFrame {
         String sql = "delete from factura where Id=" + id;
         int fila = TablaFact.getSelectedRow();
         if (fila < 0) {
-            JOptionPane.showMessageDialog(null, "Producto no Seleccionado");
+            JOptionPane.showMessageDialog(null, "Factura no Seleccionada");
         } else {
             try {
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "Producto Eliminado");
+                JOptionPane.showMessageDialog(null, "Factura Eliminada");
                 limpiarTabla(model);
 
             } catch (Exception e) {

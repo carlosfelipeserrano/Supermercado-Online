@@ -275,11 +275,7 @@ public class compra extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        try {
-            Modificar();
-        } catch (ParseException ex) {
-            System.out.println(ex);
-        }
+        Modificar();
         listado();
         nuevo();
     }//GEN-LAST:event_btnModificarActionPerformed
@@ -352,18 +348,18 @@ public class compra extends javax.swing.JFrame {
             con = cn.getConnection();
             st = con.createStatement();
             rs = st.executeQuery(sql);
-            Object[] producto = new Object[5];
+            Object[] compra = new Object[5];
 //            String[] Titulos={"ID","DNI","NOMBRES"};         
 //            model=new DefaultTableModel(null,Titulos);   
             model = (DefaultTableModel) TablaDatos.getModel();
             while (rs.next()) {
-                producto[0] = rs.getInt("id");
-                producto[1] = rs.getString("factura_id_fk");
-                producto[2] = rs.getInt("producto_id_fk");
-                producto[3] = rs.getInt("cantidad");
-                producto[4] = rs.getInt("precio");
+                compra[0] = rs.getInt("id");
+                compra[1] = rs.getString("factura_id_fk");
+                compra[2] = rs.getInt("producto_id_fk");
+                compra[3] = rs.getInt("cantidad");
+                compra[4] = rs.getInt("precio");
                 
-                model.addRow(producto);
+                model.addRow(compra);
             }
             TablaDatos.setModel(model);
 
@@ -398,18 +394,18 @@ public class compra extends javax.swing.JFrame {
             System.out.println(e);
         }
      }
-     void Modificar() throws ParseException {
+     void Modificar(){
         String fact = txtFactura.getText();
         String prod = txtproducto.getText();
-        String cant = (String) (Cantidad_unidad.getSelectedItem());
+        int cantidad = Cantidad_unidad.getSelectedIndex()+1;
         int pre = Integer.parseInt(txtTotal.getText());
-        String sql = "update compra set factura_id_fk='" + fact + "', producto_id_fk='" + prod + "',cantidad='" + cant+ "',precio='" + pre + "' where Id=" + id;
+        String sql = "update compra set factura_id_fk='" + fact + "', producto_id_fk='" + prod + "',cantidad='" + cantidad+ "',precio='" + pre + "' where Id=" + id;
         try {
             if (fact != null) {
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "compra Modificado");
+                JOptionPane.showMessageDialog(null, "compra Modificada");
                 limpiarTabla(model);
 
             } else {
@@ -431,13 +427,13 @@ public class compra extends javax.swing.JFrame {
         String sql = "delete from compra where Id=" + id;
         int fila = TablaDatos.getSelectedRow();
         if (fila < 0) {
-            JOptionPane.showMessageDialog(null, "Producto no Seleccionado");
+            JOptionPane.showMessageDialog(null, "Compra no Seleccionada");
         } else {
             try {
                 con = cn.getConnection();
                 st = con.createStatement();
                 st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "Producto Eliminado");
+                JOptionPane.showMessageDialog(null, "Compra Eliminada");
                 limpiarTabla(model);
 
             } catch (Exception e) {

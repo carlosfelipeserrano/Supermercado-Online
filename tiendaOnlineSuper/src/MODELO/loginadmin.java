@@ -19,6 +19,7 @@ public class loginadmin extends javax.swing.JFrame {
      */
     public loginadmin() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -37,14 +38,14 @@ public class loginadmin extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtIdLogin = new javax.swing.JTextField();
-        txtRut = new javax.swing.JTextField();
+        jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel1.setFont(new java.awt.Font("Tw Cen MT", 0, 24)); // NOI18N
-        jLabel1.setText("Login");
+        jLabel1.setText("LoginAdmin");
 
         btnIngresarLogin.setText("Ingresar");
         btnIngresarLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -63,6 +64,8 @@ public class loginadmin extends javax.swing.JFrame {
             }
         });
 
+        jPasswordField1.setText("jPasswordField1");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -73,9 +76,9 @@ public class loginadmin extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtIdLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
-                    .addComponent(txtRut))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtIdLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -88,8 +91,8 @@ public class loginadmin extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(41, Short.MAX_VALUE))
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -131,30 +134,24 @@ public class loginadmin extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarLoginActionPerformed
-        String usuario;
-        String rut;
+         String usuario;;
+        String pass;
         usuario = txtIdLogin.getText();
-        rut = txtRut.getText();
-
-        if(usuario.equals("admin") && rut.equals("123")){
-            Crud boton2 = new Crud();
-            boton2.setVisible(true);
-            this.setVisible(false);
-
-        }else if(usuario.isEmpty() || rut.isEmpty() || txtIdLogin.getText().trim().equals("USUARIO") || txtRut.getText().trim().equals("CONTRASEÑA")){
-            JOptionPane.showMessageDialog(this,"Los campos solicitados son obligatorios");
-
-        }else{
-            JOptionPane.showMessageDialog(this,"Usuario Incorrecto");
+        pass = jPasswordField1.getText();
+        
+        if(usuario.equals("admin") && pass.equals("123")){
+        Crud ingresa = new Crud();
+        ingresa.setVisible(true);
+        this.setVisible(false);
         }
-
+        
     }//GEN-LAST:event_btnIngresarLoginActionPerformed
 
     private void txtIdLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdLoginActionPerformed
@@ -203,7 +200,7 @@ public class loginadmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField txtIdLogin;
-    private javax.swing.JTextField txtRut;
     // End of variables declaration//GEN-END:variables
 }
